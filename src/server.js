@@ -22,7 +22,18 @@ const parseBody = (request, response, handler) => {
 
   request.on('end', () => {
     const bodyString = Buffer.concat(body).toString();
-    request.body = query.parse(bodyString);
+    const contentType = request.headers['content-type'];
+
+    if (contentType === 'application/json') {
+      try {
+        request.body = JSON.parse(bodyString);
+      } catch (e) {
+        request.body = {};
+      }
+    } else {
+      request.body = query.parse(bodyString);
+    }
+
     handler(request, response);
   });
 };
@@ -31,8 +42,8 @@ const parseBody = (request, response, handler) => {
 const handlePost = (request, response, parsedUrl) => {
   if (parsedUrl.pathname === '/addMovie') {
     parseBody(request, response, dataHandler.addMovie);
-  } else if (parsedUrl.pathname === '/updateMovie') {
-    parseBody(request, response, dataHandler.updateMovie);
+  } else if (parsedUrl.pathname === '/rateMovie') {
+    parseBody(request, response, dataHandler.rateMovie);
   } else {
     dataHandler.notFound(request, response);
   }
@@ -44,6 +55,8 @@ const handleGet = (request, response, parsedUrl) => {
     htmlHandler.getIndex(request, response);
   } else if (parsedUrl.pathname === '/style.css') {
     htmlHandler.getCSS(request, response);
+  } else if (parsedUrl.pathname === '/documentation.html') {
+    htmlHandler.getDocumentation(request, response);
   } else if (parsedUrl.pathname === '/getMovieTitles') {
     dataHandler.getMovieTitles(request, response, parsedUrl);
   } else if (parsedUrl.pathname === '/getTopRated') {
@@ -57,6 +70,7 @@ const handleGet = (request, response, parsedUrl) => {
   }
 };
 
+// Main request handler that routes requests based on HTTP method
 const onRequest = (request, response) => {
   const protocol = request.connection.encrypted ? 'https' : 'http';
   const parsedUrl = new URL(request.url, `${protocol}://${request.headers.host}`);
@@ -66,7 +80,7 @@ const onRequest = (request, response) => {
   } else if (request.method === 'GET' || request.method === 'HEAD') {
     handleGet(request, response, parsedUrl);
   } else {
-    jsonHandler.notFound(request, response);
+    dataHandler.notFound(request, response);
   }
 };
 

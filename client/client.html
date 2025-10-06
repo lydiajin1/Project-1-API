@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disney Movies API</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+
+<body>
+    <section id="top">
+        <h1>Disney Movies API Test Application</h1>
+        <a href="/documentation.html">View the Documentation Here</a>
+    </section>
+
+    <section>
+        <h2 class="endpoint-title">
+            /getMovieTitles
+            <span class="method-tag get">GET</span>
+            <span class="method-tag head">HEAD</span>
+        </h2>
+        <div id="getMovieTitles" class="endpoint-details">
+            <h3>Test This Endpoint</h3>
+            <form id="getMovieTitlesForm" action="/getMovieTitles" method="GET">
+                <label>Actor: <input type="text" name="actor" /></label>
+                <label>Year: <input type="text" name="year" /></label>
+                <label><input type="radio" name="method" value="GET" checked> GET</label>
+                <label><input type="radio" name="method" value="HEAD"> HEAD</label>
+                <input type="submit" value="Send Request" />
+                <div class="result-content"></div>
+            </form>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="endpoint-title">
+            /getTopRated
+            <span class="method-tag get">GET</span>
+            <span class="method-tag head">HEAD</span>
+        </h2>
+        <div id="getTopRated" class="endpoint-details">
+            <h3>Test This Endpoint</h3>
+            <form id="getTopRatedForm" action="/getTopRated" method="GET">
+                <label>Min Rating: <input type="text" name="minRating" /></label>
+                <label>Limit: <input type="text" name="limit" /></label>
+                <label><input type="radio" name="method" value="GET" checked> GET</label>
+                <label><input type="radio" name="method" value="HEAD"> HEAD</label>
+                <input type="submit" value="Send Request" />
+                <div class="result-content"></div>
+            </form>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="endpoint-title">
+            /getByDecade
+            <span class="method-tag get">GET</span>
+            <span class="method-tag head">HEAD</span>
+        </h2>
+        <div id="getByDecade" class="endpoint-details">
+            <h3>Test This Endpoint</h3>
+            <form id="getByDecadeForm" action="/getByDecade" method="GET">
+                <label>Decade: <input type="text" name="decade" /></label>
+                <label><input type="radio" name="method" value="GET" checked> GET</label>
+                <label><input type="radio" name="method" value="HEAD"> HEAD</label>
+                <input type="submit" value="Send Request" />
+                <div class="result-content"></div>
+            </form>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="endpoint-title">
+            /getByRuntime
+            <span class="method-tag get">GET</span>
+            <span class="method-tag head">HEAD</span>
+        </h2>
+        <div id="getByRuntime" class="endpoint-details">
+            <h3>Test This Endpoint</h3>
+            <form id="getByRuntimeForm" action="/getByRuntime" method="GET">
+                <label>Min Runtime: <input type="text" name="min" /></label>
+                <label>Max Runtime: <input type="text" name="max" /></label>
+                <label>Limit: <input type="text" name="limit" /></label>
+                <label><input type="radio" name="method" value="GET" checked> GET</label>
+                <label><input type="radio" name="method" value="HEAD"> HEAD</label>
+                <input type="submit" value="Send Request" />
+                <div class="result-content"></div>
+            </form>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="endpoint-title">
+            /addMovie
+            <span class="method-tag post">POST</span>
+        </h2>
+        <div id="addMovie" class="endpoint-details">
+            <h3>Test This Endpoint</h3>
+            <form id="addMovieForm" action="/addMovie" method="POST">
+                <label>Title: <input type="text" name="title" /></label><br>
+                <label>Year: <input type="text" name="year" /></label><br>
+                <label>Genre: <input type="text" name="genre" /></label><br>
+                <label>Director: <input type="text" name="director" /></label><br>
+                <label>Runtime: <input type="text" name="runtime" /></label><br>
+                <label>Rating: <input type="text" name="rating" /></label><br>
+                <input type="submit" value="Add Movie" />
+                <div class="result-content"></div>
+            </form>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="endpoint-title">
+            /rateMovie
+            <span class="method-tag post">POST</span>
+        </h2>
+        <div id="rateMovie" class="endpoint-details">
+            <h3>Test This Endpoint</h3>
+            <form id="rateMovieForm" action="/rateMovie" method="POST">
+                <label>Title: <input type="text" name="title" /></label><br>
+                <label>Rating: <input type="text" name="rating" /></label><br>
+                <input type="submit" value="Rate Movie" />
+                <div class="result-content"></div>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        Lydia Jin - 2025 - IGME 430 Project 1
+    </footer>
+</body>
+
+<script>
+    // Code taken from W3 school to make collapsible sections for endpoints
+    // https://www.w3schools.com/howto/howto_js_collapsible.asp
+    var coll = document.getElementsByClassName("endpoint-title");
+    var i;
+
+    for (i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
+        });
+    }
+
+    const handleResponse = async (response, method, form) => {
+        const content = form.querySelector('.result-content');
+
+        // Display status message based on status code
+        switch (response.status) {
+            case 200:
+                content.innerHTML = `<b>Success</b><br>`;
+                break;
+            case 201:
+                content.innerHTML = `<b>Created</b><br>`;
+                break;
+            case 204:
+                content.innerHTML = `<b>Updated (No Content)</b>`;
+                return;
+            case 400:
+                content.innerHTML = `<b>Bad Request</b><br>`;
+                break;
+            case 404:
+                content.innerHTML = `<b>Not Found</b><br>`;
+                break;
+            default:
+                content.innerHTML = `Error code not implemented by client.<br>`;
+                break;
+        }
+
+        // Display status and content-length
+        content.innerHTML += `<b>Status: </b>${response.status}<br>`;
+        content.innerHTML += `<b>Content-Length: </b>${response.headers.get('Content-Length')}<br>`;
+
+        // Parse and display JSON response for GET requests
+        if (method !== 'HEAD') {
+            try {
+                const obj = await response.json();
+
+                if (obj.error) {
+                    content.innerHTML += `<b>Error: </b>${JSON.stringify(obj)}`;
+                } else {
+                    content.innerHTML += `<b>Response: </b>${JSON.stringify(obj)}`;
+                }
+            } catch (e) {
+                content.innerHTML += `<b>Response: </b>Unable to parse JSON`;
+            }
+        }
+    };
+
+    const requestUpdate = async (form) => {
+        const method = form.querySelector('input[name="method"]:checked').value;
+        let url = form.getAttribute('action');
+        let params = '?';
+
+        // Parameter options for GET/HEAD requests
+        const paramOptions = ['actor', 'year', 'minRating', 'limit', 'decade', 'min', 'max'];
+
+        paramOptions.forEach(option => {
+            const field = form.querySelector(`input[name="${option}"]`);
+            // Check if parameter exists and has a value
+            if (field && field.value) {
+                // Build params in URL encoded format
+                params += `${option}=${encodeURIComponent(field.value)}&`;
+            }
+        });
+
+        // Add params to URL
+        url += params;
+        // Cut off '&' from end or '?' if no params
+        url = url.slice(0, -1);
+
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                'Accept': 'application/json',
+            }
+        });
+
+        handleResponse(response, method, form);
+    };
+
+    const sendPost = async (form) => {
+        const url = form.getAttribute('action');
+        const method = form.getAttribute('method');
+        let formData = '';
+
+        // Data options for POST requests
+        const dataOptions = ['title', 'year', 'genre', 'director', 'runtime', 'rating'];
+
+        dataOptions.forEach(option => {
+            const field = form.querySelector(`input[name="${option}"]`);
+            // Check if data option exists and has a value
+            if (field && field.value) {
+                // Build formData in URL encoded format
+                formData += `${option}=${encodeURIComponent(field.value)}&`;
+            }
+        });
+
+        // Cut off '&' from end if formData has content
+        if (formData.length !== 0) {
+            formData = formData.slice(0, -1);
+        }
+
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept': 'application/json',
+            },
+            body: formData
+        });
+
+        handleResponse(response, method, form);
+    };
+
+    // Initialize event listeners on forms
+    const init = () => {
+        console.log('Init called');
+        const getForms = document.querySelectorAll('form[method="GET"]');
+        const postForms = document.querySelectorAll('form[method="POST"]');
+
+        console.log('GET forms:', getForms.length);
+        console.log('POST forms:', postForms.length);
+
+        // Add event listeners for GET and HEAD forms
+        getForms.forEach(form => {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                requestUpdate(form);
+                return false;
+            });
+        });
+
+        // Add event listeners for POST forms
+        postForms.forEach(form => {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                sendPost(form);
+                return false;
+            });
+        });
+    };
+
+    window.onload = init;
+</script>
+
+</html>
