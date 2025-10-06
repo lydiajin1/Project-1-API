@@ -85,7 +85,6 @@ const getTopRated = (request, response, parsedUrl) => {
   responseData = responseData.slice(0, limit);
 
   return respondJSON(request, response, 200, { movies: responseData, count: responseData.length });
-
 };
 
 // Returns movies from a specific decade
@@ -150,8 +149,8 @@ const getByRuntime = (request, response, parsedUrl) => {
     if (typeof runtime !== 'number') return false;
 
     // Only check min and max if they are valid numbers
-    if (min !== min || (min !== undefined && runtime < min)) return false;
-    if (max !== max || (max !== undefined && runtime > max)) return false;
+    if (Number.isNaN(min) || (min !== undefined && runtime < min)) return false;
+    if (Number.isNaN(max) || (max !== undefined && runtime > max)) return false;
 
     return true;
   });
@@ -171,7 +170,9 @@ const getByRuntime = (request, response, parsedUrl) => {
 // ****Not working properly yet****
 const addMovie = (request, response) => {
   // Extract movie details from the request body
-  const { title, year, genre, director, runtime, rating } = request.body;
+  const {
+    title, year, genre, director, runtime, rating,
+  } = request.body;
 
   // Validate required fields
   if (!title) {
@@ -182,7 +183,10 @@ const addMovie = (request, response) => {
   }
 
   // Check for duplicate titles (case-insensitive)
-  if (disneyMoviesJSON.some((movie) => movie.title?.toLowerCase() === title.toLowerCase())) {
+  const titleExists = disneyMoviesJSON.some(
+    (movie) => movie.title && movie.title.toLowerCase() === title.toLowerCase(),
+  );
+  if (titleExists) {
     return respondJSON(request, response, 400, {
       error: `Movie with title "${title}" already exists`,
       id: 'movieExists',
@@ -229,7 +233,7 @@ const rateMovie = (request, response) => {
 
   // Find the movie by title (case-insensitive)
   const movieIndex = disneyMoviesJSON.findIndex(
-    (movie) => movie.title?.toLowerCase() === title.toLowerCase()
+    (movie) => movie.title && movie.title.toLowerCase() === title.toLowerCase(),
   );
 
   // If movie not found, return 404
@@ -244,7 +248,6 @@ const rateMovie = (request, response) => {
 
   return respondJSON(request, response, 204, {});
 };
-
 
 // Handle 404 not found
 const notFound = (request, response) => {
