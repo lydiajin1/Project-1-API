@@ -63,23 +63,42 @@ const getMovieTitles = (request, response, parsedUrl) => {
 };
 
 // Returns top rated movies
-// ****Not working properly yet****
 const getTopRated = (request, response, parsedUrl) => {
   // Extract query parameters
   const { searchParams } = parsedUrl;
-  // Get minimum rating and limit, with defaults
-  const minRating = parseFloat(searchParams.get('minRating')) || 0;
-  const limit = parseInt(searchParams.get('limit'), 10) || 10;
+  const minRatingParam = searchParams.get('minRating');
+  const limitParam = searchParams.get('limit');
 
-  // Filter movies by minimum rating
+  // Get minimum rating and limit, with defaults
+  const minRating = minRatingParam ? parseFloat(minRatingParam) : 0;
+  const limit = limitParam ? parseInt(limitParam, 10) : 10;
+
+  // Validate minRating parameter
+  if (minRatingParam && Number.isNaN(minRating)) {
+    return respondJSON(request, response, 400, {
+      error: 'minRating must be a valid number',
+      id: 'invalidMinRating',
+    });
+  }
+
+  // Validate limit parameter
+  if (limitParam && (Number.isNaN(limit) || limit < 1)) {
+    return respondJSON(request, response, 400, {
+      error: 'limit must be a valid positive number',
+      id: 'invalidLimit',
+    });
+  }
+
+  // Filter movies that have valid ratings
   let responseData = disneyMoviesJSON.filter((movie) => {
-    const rating = parseFloat(movie.rating);
+    if (!movie.imdb_rating) return false;
+    const rating = parseFloat(movie.imdb_rating);
     return !Number.isNaN(rating) && rating >= minRating;
   });
 
   // Referenced MDN - Mozilla for .sort method and .slice(0, limit)
-  // Sort movies by rating in descending order and limit the results
-  responseData.sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating));
+  // Sort movies by rating in descending order
+  responseData.sort((a, b) => parseFloat(b.imdb_rating) - parseFloat(a.imdb_rating));
 
   // Limit the number of results
   responseData = responseData.slice(0, limit);
@@ -167,17 +186,16 @@ const getByRuntime = (request, response, parsedUrl) => {
 };
 
 // Adds a new movie to the dataset
-// ****Not working properly yet****
 const addMovie = (request, response) => {
   // Extract movie details from the request body
   const {
-    title, year, genre, director, runtime, rating,
+    title, year, runtime, rating,
   } = request.body;
 
-  // Validate required fields
-  if (!title) {
+  // Validate all required fields
+  if (!title || !year || !runtime || !rating) {
     return respondJSON(request, response, 400, {
-      error: 'Title is required.',
+      error: 'Title, year, runtime, and rating are all required',
       id: 'addMovieMissingParams',
     });
   }
@@ -193,17 +211,33 @@ const addMovie = (request, response) => {
     });
   }
 
+  // Validate runtime
+  const runtimeNum = parseInt(runtime, 10);
+  if (Number.isNaN(runtimeNum) || runtimeNum <= 0) {
+    return respondJSON(request, response, 400, {
+      error: 'Runtime must be a valid positive number',
+      id: 'invalidRuntime',
+    });
+  }
+
+  // Validate rating
+  const ratingNum = parseFloat(rating);
+  if (Number.isNaN(ratingNum) || ratingNum < 0 || ratingNum > 10) {
+    return respondJSON(request, response, 400, {
+      error: 'Rating must be a valid number between 0 and 10',
+      id: 'invalidRating',
+    });
+  }
+
   // Create new movie object
   const newMovie = {
     title,
-    'Release date': year ? [year.toString()] : [],
-    'Release date (datetime)': year ? year.toString() : '',
-    Genre: genre ? [genre] : [],
-    'Directed by': director ? [director] : [],
-    'Running time (int)': runtime ? parseInt(runtime, 10) : null,
-    rating: rating ? rating.toString() : null,
+    'Release date': year.toString(),
+    'Running time (int)': runtimeNum,
+    imdb_rating: rating.toString(),
   };
 
+  // Add the new movie to the dataset
   disneyMoviesJSON.push(newMovie);
 
   return respondJSON(request, response, 201, newMovie);
@@ -218,15 +252,15 @@ const rateMovie = (request, response) => {
   if (!title || !rating) {
     return respondJSON(request, response, 400, {
       error: 'Title and rating body parameters are both required',
-      id: 'rateFilmMissingParams',
+      id: 'rateMovieMissingParams',
     });
   }
 
   // Validate rating is a number
   const ratingNum = parseFloat(rating);
-  if (Number.isNaN(ratingNum)) {
+  if (Number.isNaN(ratingNum) || ratingNum < 0 || ratingNum > 10) {
     return respondJSON(request, response, 400, {
-      error: 'Rating must be a valid number',
+      error: 'Rating must be a valid number between 0 and 10',
       id: 'invalidRating',
     });
   }
@@ -239,14 +273,19 @@ const rateMovie = (request, response) => {
   // If movie not found, return 404
   if (movieIndex === -1) {
     return respondJSON(request, response, 404, {
-      error: `No movie has title: ${title}`,
-      id: 'titleNotFound',
+      error: `No movie found with title: ${title}`,
+      id: 'movieNotFound',
     });
   }
 
-  disneyMoviesJSON[movieIndex].rating = rating.toString();
+  // Update the movie rating
+  disneyMoviesJSON[movieIndex].imdb_rating = rating.toString();
 
-  return respondJSON(request, response, 204, {});
+  // Return 200 with the updated movie
+  return respondJSON(request, response, 200, {
+    message: 'Movie rating updated successfully',
+    movie: disneyMoviesJSON[movieIndex],
+  });
 };
 
 // Handle 404 not found

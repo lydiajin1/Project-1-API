@@ -100,8 +100,6 @@
             <form id="addMovieForm" action="/addMovie" method="POST">
                 <label>Title: <input type="text" name="title" /></label><br>
                 <label>Year: <input type="text" name="year" /></label><br>
-                <label>Genre: <input type="text" name="genre" /></label><br>
-                <label>Director: <input type="text" name="director" /></label><br>
                 <label>Runtime: <input type="text" name="runtime" /></label><br>
                 <label>Rating: <input type="text" name="rating" /></label><br>
                 <input type="submit" value="Add Movie" />
@@ -170,7 +168,7 @@
                 content.innerHTML = `<b>Not Found</b><br>`;
                 break;
             default:
-                content.innerHTML = `Error code not implemented by client.<br>`;
+                content.innerHTML = `<b>Error code not implemented by client.</b><br>`;
                 break;
         }
 
@@ -232,7 +230,7 @@
         let formData = '';
 
         // Data options for POST requests
-        const dataOptions = ['title', 'year', 'genre', 'director', 'runtime', 'rating'];
+        const dataOptions = ['title', 'year', 'runtime', 'rating'];
 
         dataOptions.forEach(option => {
             const field = form.querySelector(`input[name="${option}"]`);
