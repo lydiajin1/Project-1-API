@@ -182,11 +182,11 @@
 
                     <h3>Returns</h3>
                     <p>Returns an updated movie object (200), no content if unchanged (204), or an error (400/404).</p>
-                    <p><strong>Format (success):</strong>
+                    <p>Format (success):
                         <code>{ "title": string, "Directed by": [string], "Produced by": string, "Screenplay by": string, "Story by": [string], "Starring": [string], "Music by": [string], "Cinematography": [string], "Edited by": string, "Production company": [string], "Distributed by": [string], "Release date": [string], "Running time": string, "Country": string, "Language": string, "Budget": string, "Box office": string, "Running time (int)": number, "Budget (float)": number, "Box office (float)": number, "Release date (datetime)": string, "imdb_rating": string, "imdb_votes": string, "imdb_id": string, "metascore": string, "rotten_tomatoes": string }</code>
                     </p>
-                    <p><strong>Format (no change):</strong> <code>204 No Content</code></p>
-                    <p><strong>Format (error):</strong> <code>{ error: string, id: string }</code></p>
+                    <p>Format (no change):<code>204 No Content</code></p>
+                    <p>Format (error): <code>{ error: string, id: string }</code></p>
 
                     <h3>Examples</h3>
                     <p><strong>Request:</strong> <code>/rateMovie</code></p>
