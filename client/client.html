@@ -5,127 +5,231 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Disney Movies API</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <link rel="stylesheet" type="text/css" href="/style.css">
 </head>
 
 <body>
-    <section id="top">
-        <h1>Disney Movies API Test Application</h1>
-        <a href="/documentation.html">View the Documentation Here</a>
-    </section>
+    <div class="section pb-3" style="background: linear-gradient(135deg, #9099e2 0%, #4b4bcf 100%);">
+        <h1 class="title is-2 has-text-white has-text-centered"> Disney Movies API </h1>
+    </div>
 
-    <section>
-        <h2 class="endpoint-title">
-            /getMovieTitles
-            <span class="method-tag get">GET</span>
-            <span class="method-tag head">HEAD</span>
-        </h2>
-        <div id="getMovieTitles" class="endpoint-details">
-            <h3>Test This Endpoint</h3>
-            <form id="getMovieTitlesForm" action="/getMovieTitles" method="GET">
-                <label>Actor: <input type="text" name="actor" /></label>
-                <label>Year: <input type="text" name="year" /></label>
-                <label><input type="radio" name="method" value="GET" checked> GET</label>
-                <label><input type="radio" name="method" value="HEAD"> HEAD</label>
-                <input type="submit" value="Send Request" />
-                <div class="result-content"></div>
-            </form>
+    <div class="section has-background-light">
+        <div class="container" style="max-width: 1000px;">
+            <section class="endpoint-docs">
+                <h2 class="endpoint-title button column is-12 has-text-left is-link is-size-4">
+                    /getMovieTitles
+                    <span class="tag m-1 has-text-weight-bold"
+                        style="background-color: #A8E6CF; color: #2D5F4D;">GET</span>
+                    <span class="tag m-1 has-text-weight-bold"
+                        style="background-color: #FFD4A3; color: #8B5A00;">HEAD</span>
+                </h2>
+                <div class="endpoint-details has-background-white-ter px-4 py-4">
+                    <form id="getMovieTitlesForm" action="/getMovieTitles" method="GET">
+                        <div class="field">
+                            <label class="label">Actor:</label>
+                            <div class="control">
+                                <input class="input" type="text" name="actor">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">Year:</label>
+                            <div class="control">
+                                <input class="input" type="text" name="year">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="radio">
+                                <input type="radio" name="method" value="GET" checked> GET
+                            </label>
+                            <label class="radio">
+                                <input type="radio" name="method" value="HEAD"> HEAD
+                            </label>
+                        </div>
+                        <button type="submit" class="button is-link is-rounded">Send Request</button>
+                        <div class="result-content"></div>
+                    </form>
+                </div>
+            </section>
+
+            <section class="endpoint-docs">
+                <h2 class="endpoint-title button column is-12 has-text-left is-link is-size-4">
+                    /getTopRated
+                    <span class="tag m-1 has-text-weight-bold"
+                        style="background-color: #A8E6CF; color: #2D5F4D;">GET</span>
+                    <span class="tag m-1 has-text-weight-bold"
+                        style="background-color: #FFD4A3; color: #8B5A00;">HEAD</span>
+                </h2>
+                <div class="endpoint-details has-background-white-ter px-4 py-4">
+                    <form id="getTopRatedForm" action="/getTopRated" method="GET">
+                        <div class="field">
+                            <label class="label">Min Rating:</label>
+                            <div class="control">
+                                <input class="input" type="number" name="minRating" step="0.1">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">Limit:</label>
+                            <div class="control">
+                                <input class="input" type="number" name="limit" step="1">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="radio">
+                                <input type="radio" name="method" value="GET" checked> GET
+                            </label>
+                            <label class="radio">
+                                <input type="radio" name="method" value="HEAD"> HEAD
+                            </label>
+                        </div>
+                        <button type="submit" class="button is-link is-rounded">Send Request</button>
+                        <div class="result-content"></div>
+                    </form>
+                </div>
+            </section>
+
+            <section class="endpoint-docs">
+                <h2 class="endpoint-title button column is-12 has-text-left is-link is-size-4">
+                    /getByDecade
+                    <span class="tag m-1 has-text-weight-bold"
+                        style="background-color: #A8E6CF; color: #2D5F4D;">GET</span>
+                    <span class="tag m-1 has-text-weight-bold"
+                        style="background-color: #FFD4A3; color: #8B5A00;">HEAD</span>
+                </h2>
+                <div class="endpoint-details has-background-white-ter px-4 py-4">
+                    <form id="getByDecadeForm" action="/getByDecade" method="GET">
+                        <div class="field">
+                            <label class="label">Decade:</label>
+                            <div class="control">
+                                <input class="input" type="number" name="decade" placeholder="e.g., 1990">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="radio">
+                                <input type="radio" name="method" value="GET" checked> GET
+                            </label>
+                            <label class="radio">
+                                <input type="radio" name="method" value="HEAD"> HEAD
+                            </label>
+                        </div>
+                        <button type="submit" class="button is-link is-rounded">Send Request</button>
+                        <div class="result-content"></div>
+                    </form>
+                </div>
+            </section>
+
+            <section class="endpoint-docs">
+                <h2 class="endpoint-title button column is-12 has-text-left is-link is-size-4">
+                    /getByRuntime
+                    <span class="tag m-1 has-text-weight-bold"
+                        style="background-color: #A8E6CF; color: #2D5F4D;">GET</span>
+                    <span class="tag m-1 has-text-weight-bold"
+                        style="background-color: #FFD4A3; color: #8B5A00;">HEAD</span>
+                </h2>
+                <div class="endpoint-details has-background-white-ter px-4 py-4">
+                    <form id="getByRuntimeForm" action="/getByRuntime" method="GET">
+                        <div class="field">
+                            <label class="label">Min Runtime (minutes):</label>
+                            <div class="control">
+                                <input class="input" type="number" name="min" min="0">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">Max Runtime (minutes):</label>
+                            <div class="control">
+                                <input class="input" type="number" name="max" min="0">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">Limit:</label>
+                            <div class="control">
+                                <input class="input" type="number" name="limit" min="1">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="radio">
+                                <input type="radio" name="method" value="GET" checked> GET
+                            </label>
+                            <label class="radio">
+                                <input type="radio" name="method" value="HEAD"> HEAD
+                            </label>
+                        </div>
+                        <button type="submit" class="button is-link is-rounded">Send Request</button>
+                        <div class="result-content"></div>
+                    </form>
+                </div>
+            </section>
+
+            <section class="endpoint-docs">
+                <h2 class="endpoint-title button column is-12 has-text-left is-link is-size-4">
+                    /addMovie
+                    <span class="tag m-1 has-text-weight-bold"
+                        style="background-color: #FFB3BA; color: #8B0000;">POST</span>
+                </h2>
+                <div class="endpoint-details has-background-white-ter px-4 py-4">
+                    <form id="addMovieForm" action="/addMovie" method="POST">
+                        <div class="field">
+                            <label class="label">Title:</label>
+                            <div class="control">
+                                <input class="input" type="text" name="title">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">Year:</label>
+                            <div class="control">
+                                <input class="input" type="number" name="year">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">Runtime (minutes):</label>
+                            <div class="control">
+                                <input class="input" type="number" name="runtime">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">Rating (0-10):</label>
+                            <div class="control">
+                                <input class="input" type="number" name="rating" step="0.1">
+                            </div>
+                        </div>
+                        <button type="submit" class="button is-link is-rounded">Add Movie</button>
+                        <div class="result-content"></div>
+                    </form>
+                </div>
+            </section>
+
+            <section class="endpoint-docs">
+                <h2 class="endpoint-title button column is-12 has-text-left is-link is-size-4">
+                    /rateMovie
+                    <span class="tag m-1 has-text-weight-bold"
+                        style="background-color: #FFB3BA; color: #8B0000;">POST</span>
+                </h2>
+                <div class="endpoint-details has-background-white-ter px-4 py-4">
+                    <form id="rateMovieForm" action="/rateMovie" method="POST">
+                        <div class="field">
+                            <label class="label">Title:</label>
+                            <div class="control">
+                                <input class="input" type="text" name="title">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">Rating (0-10):</label>
+                            <div class="control">
+                                <input class="input" type="number" name="rating" step="0.1">
+                            </div>
+                        </div>
+                        <button type="submit" class="button is-link is-rounded">Rate Movie</button>
+                        <div class="result-content"></div>
+                    </form>
+                </div>
+            </section>
         </div>
-    </section>
+    </div>
 
-    <section>
-        <h2 class="endpoint-title">
-            /getTopRated
-            <span class="method-tag get">GET</span>
-            <span class="method-tag head">HEAD</span>
-        </h2>
-        <div id="getTopRated" class="endpoint-details">
-            <h3>Test This Endpoint</h3>
-            <form id="getTopRatedForm" action="/getTopRated" method="GET">
-                <label>Min Rating: <input type="text" name="minRating" /></label>
-                <label>Limit: <input type="text" name="limit" /></label>
-                <label><input type="radio" name="method" value="GET" checked> GET</label>
-                <label><input type="radio" name="method" value="HEAD"> HEAD</label>
-                <input type="submit" value="Send Request" />
-                <div class="result-content"></div>
-            </form>
-        </div>
-    </section>
-
-    <section>
-        <h2 class="endpoint-title">
-            /getByDecade
-            <span class="method-tag get">GET</span>
-            <span class="method-tag head">HEAD</span>
-        </h2>
-        <div id="getByDecade" class="endpoint-details">
-            <h3>Test This Endpoint</h3>
-            <form id="getByDecadeForm" action="/getByDecade" method="GET">
-                <label>Decade: <input type="text" name="decade" /></label>
-                <label><input type="radio" name="method" value="GET" checked> GET</label>
-                <label><input type="radio" name="method" value="HEAD"> HEAD</label>
-                <input type="submit" value="Send Request" />
-                <div class="result-content"></div>
-            </form>
-        </div>
-    </section>
-
-    <section>
-        <h2 class="endpoint-title">
-            /getByRuntime
-            <span class="method-tag get">GET</span>
-            <span class="method-tag head">HEAD</span>
-        </h2>
-        <div id="getByRuntime" class="endpoint-details">
-            <h3>Test This Endpoint</h3>
-            <form id="getByRuntimeForm" action="/getByRuntime" method="GET">
-                <label>Min Runtime: <input type="text" name="min" /></label>
-                <label>Max Runtime: <input type="text" name="max" /></label>
-                <label>Limit: <input type="text" name="limit" /></label>
-                <label><input type="radio" name="method" value="GET" checked> GET</label>
-                <label><input type="radio" name="method" value="HEAD"> HEAD</label>
-                <input type="submit" value="Send Request" />
-                <div class="result-content"></div>
-            </form>
-        </div>
-    </section>
-
-    <section>
-        <h2 class="endpoint-title">
-            /addMovie
-            <span class="method-tag post">POST</span>
-        </h2>
-        <div id="addMovie" class="endpoint-details">
-            <h3>Test This Endpoint</h3>
-            <form id="addMovieForm" action="/addMovie" method="POST">
-                <label>Title: <input type="text" name="title" /></label><br>
-                <label>Year: <input type="text" name="year" /></label><br>
-                <label>Runtime: <input type="text" name="runtime" /></label><br>
-                <label>Rating: <input type="text" name="rating" /></label><br>
-                <input type="submit" value="Add Movie" />
-                <div class="result-content"></div>
-            </form>
-        </div>
-    </section>
-
-    <section>
-        <h2 class="endpoint-title">
-            /rateMovie
-            <span class="method-tag post">POST</span>
-        </h2>
-        <div id="rateMovie" class="endpoint-details">
-            <h3>Test This Endpoint</h3>
-            <form id="rateMovieForm" action="/rateMovie" method="POST">
-                <label>Title: <input type="text" name="title" /></label><br>
-                <label>Rating: <input type="text" name="rating" /></label><br>
-                <input type="submit" value="Rate Movie" />
-                <div class="result-content"></div>
-            </form>
-        </div>
-    </section>
-
-    <footer>
-        Lydia Jin - 2025 - IGME 430 Project 1
+    <footer class="footer has-text-centered">
+        <p style="color: #6B4FBB;"> Lydia Jin - 2025 - IGME 430 Project 1 </p>
+        <p><a href="/documentation.html" style="color: #FF69B4; text-decoration: underline;">View API
+                Documentation</a></p>
     </footer>
 </body>
 
@@ -153,41 +257,41 @@
         // Display status message based on status code
         switch (response.status) {
             case 200:
-                content.innerHTML = `<b>Success</b><br>`;
+                content.innerHTML = `<p class="is-size-6 mb-1 has-text-success"><b>Success</b></p>`;
                 break;
             case 201:
-                content.innerHTML = `<b>Created</b><br>`;
+                content.innerHTML = `<p class="is-size-6 mb-1 has-text-success"><b>Created</b></p>`;
                 break;
             case 204:
-                content.innerHTML = `<b>Updated (No Content)</b>`;
-                return;
+                content.innerHTML = `<p class="is-size-6 mb-1 has-text-success"><b>Updated (No Content)</b></p>`;
+                break;
             case 400:
-                content.innerHTML = `<b>Bad Request</b><br>`;
+                content.innerHTML = `<p class="is-size-6 mb-1 has-text-danger"><b>Bad Request</b></p>`;
                 break;
             case 404:
-                content.innerHTML = `<b>Not Found</b><br>`;
+                content.innerHTML = `<p class="is-size-6 mb-1 has-text-danger"><b>Not Found</b></p>`;
                 break;
             default:
-                content.innerHTML = `<b>Error code not implemented by client.</b><br>`;
+                content.innerHTML = `<p class="is-size-6 mb-1 has-text-danger"><b>Error</b></p>`;
                 break;
         }
 
         // Display status and content-length
-        content.innerHTML += `<b>Status: </b>${response.status}<br>`;
-        content.innerHTML += `<b>Content-Length: </b>${response.headers.get('Content-Length')}<br>`;
+        content.innerHTML += `<p class="my-0"><b>Status: </b>${response.status}</p>`;
+        content.innerHTML += `<p class="my-0"><b>Content-Length: </b>${response.headers.get('Content-Length')}</p>`;
 
-        // Parse and display JSON response for GET requests
-        if (method !== 'HEAD') {
+        // Parse and display JSON response (skip for HEAD and 204)
+        if (method !== 'HEAD' && response.status !== 204) {
             try {
                 const obj = await response.json();
 
                 if (obj.error) {
-                    content.innerHTML += `<b>Error: </b>${JSON.stringify(obj)}`;
+                    content.innerHTML += `<p class="my-0"><b>Error: </b>${JSON.stringify(obj)}</p>`;
                 } else {
-                    content.innerHTML += `<b>Response: </b>${JSON.stringify(obj)}`;
+                    content.innerHTML += `<p class="my-0"><b>Response: </b>${JSON.stringify(obj)}</p>`;
                 }
             } catch (e) {
-                content.innerHTML += `<b>Response: </b>Unable to parse JSON`;
+                content.innerHTML += `<p class="my-0"><b>Response: </b>Unable to parse JSON</p>`;
             }
         }
     };

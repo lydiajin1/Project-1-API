@@ -4,6 +4,19 @@ const path = require('path');
 const disneyMovies = fs.readFileSync(path.resolve(__dirname, '../dataset/disney_movies.json'));
 const disneyMoviesJSON = JSON.parse(disneyMovies);
 
+// Helps filter relevant movie information
+const getBasicMovieInfo = (movie) => ({
+  title: movie.title,
+  starring: movie.Starring,
+  'directed by': movie['Directed by'],
+  'release date': movie['Release date (datetime)'] || movie['Release date'],
+  country: movie.Country,
+  language: movie.Language,
+  'running time': movie['Running time (int)'],
+  'imdb rating': movie.imdb_rating,
+  'rotten tomatoes': movie.rotten_tomatoes,
+});
+
 // Function to respond with a json object
 const respondJSON = (request, response, status, object) => {
   const content = JSON.stringify(object);
@@ -25,7 +38,7 @@ const getMovieTitles = (request, response, parsedUrl) => {
   // Extract query parameters
   const { searchParams } = parsedUrl;
   const actor = searchParams.get('actor');
-  const year = searchParams.get('year');
+  const yearParam = searchParams.get('year');
 
   let responseData = disneyMoviesJSON;
 
@@ -42,15 +55,24 @@ const getMovieTitles = (request, response, parsedUrl) => {
   }
 
   // Filter by year if provided
-  if (year) {
+  if (yearParam) {
+    const year = parseInt(yearParam, 10);
+    // Validate year is 4 digits and between 1937 and 2021
+    if (Number.isNaN(year) || year < 1937 || year > 2021 || yearParam.length !== 4) {
+      return respondJSON(request, response, 400, {
+        error: 'Year must be a 4-digit number between 1937 and 2021',
+        id: 'invalidYear',
+      });
+    }
+
     responseData = responseData.filter((movie) => {
       // Check both 'Release date' and 'Release date (datetime)' fields
       if (movie['Release date'] && Array.isArray(movie['Release date'])) {
-        return movie['Release date'].some((date) => date.includes(year));
+        return movie['Release date'].some((date) => date.includes(yearParam));
       }
       // Check 'Release date (datetime)' field if 'Release date' is not available
       if (movie['Release date (datetime)']) {
-        return movie['Release date (datetime)'].includes(year);
+        return movie['Release date (datetime)'].includes(yearParam);
       }
       return false;
     });
@@ -59,7 +81,7 @@ const getMovieTitles = (request, response, parsedUrl) => {
   // Extract titles from the filtered movies
   const titles = responseData.map((movie) => movie.title).filter(Boolean);
 
-  return respondJSON(request, response, 200, { titles, count: titles.length });
+  return respondJSON(request, response, 200, titles);
 };
 
 // Returns top rated movies
@@ -70,8 +92,19 @@ const getTopRated = (request, response, parsedUrl) => {
   const limitParam = searchParams.get('limit');
 
   // Get minimum rating and limit, with defaults
-  const minRating = minRatingParam ? parseFloat(minRatingParam) : 0;
-  const limit = limitParam ? parseInt(limitParam, 10) : 10;
+  let minRating;
+  if (minRatingParam) {
+    minRating = parseFloat(minRatingParam);
+  } else {
+    minRating = 0;
+  }
+
+  let limit;
+  if (limitParam) {
+    limit = parseInt(limitParam, 10);
+  } else {
+    limit = 10;
+  }
 
   // Validate minRating parameter
   if (minRatingParam && Number.isNaN(minRating)) {
@@ -81,6 +114,14 @@ const getTopRated = (request, response, parsedUrl) => {
     });
   }
 
+  // Validate minRating is between 0 and 10
+    if (minRating < 0 || minRating > 10) {
+    return respondJSON(request, response, 400, {
+      error: 'minRating must be between 0 and 10',
+      id: 'outOfRangeMinRating',
+    });
+  }
+  
   // Validate limit parameter
   if (limitParam && (Number.isNaN(limit) || limit < 1)) {
     return respondJSON(request, response, 400, {
@@ -103,27 +144,30 @@ const getTopRated = (request, response, parsedUrl) => {
   // Limit the number of results
   responseData = responseData.slice(0, limit);
 
-  return respondJSON(request, response, 200, { movies: responseData, count: responseData.length });
+  // Filter to show only relevant information
+  const filteredMovies = responseData.map(getBasicMovieInfo);
+
+  return respondJSON(request, response, 200, filteredMovies);
 };
 
 // Returns movies from a specific decade
 const getByDecade = (request, response, parsedUrl) => {
   const { searchParams } = parsedUrl;
-  const decade = searchParams.get('decade');
+  const decadeParam = searchParams.get('decade');
 
   // Validate decade parameter
-  if (!decade) {
+  if (!decadeParam) {
     return respondJSON(request, response, 400, {
       error: 'Decade is required.',
       id: 'getByDecadeMissingParam',
     });
   }
 
-  // Extract the starting year from the decade string
-  const decadeNum = parseInt(decade, 10);
-  if (Number.isNaN(decadeNum)) {
+  // Validate decade is a 4-digit number ending in 0 (like 1940, 1990, 2020)
+  const decadeNum = parseInt(decadeParam, 10);
+  if (Number.isNaN(decadeNum) || decadeParam.length !== 4 || decadeNum % 10 !== 0) {
     return respondJSON(request, response, 400, {
-      error: 'Invalid decade format. Use format like "1990s" or "1990"',
+      error: 'Decade must be a 4-digit year ending in 0 (e.g., 1940, 1990, 2020)',
       id: 'invalidDecade',
     });
   }
@@ -143,22 +187,48 @@ const getByDecade = (request, response, parsedUrl) => {
     return false;
   });
 
-  // Return the filtered movies
-  return respondJSON(request, response, 200, {
-    decade,
-    movies: responseData,
-    count: responseData.length,
-  });
+  // Filter to show only relevant information
+  const filteredMovies = responseData.map(getBasicMovieInfo);
+
+  return respondJSON(request, response, 200, filteredMovies);
 };
 
 // Returns movies filtered by runtime
 const getByRuntime = (request, response, parsedUrl) => {
   // Extract query parameters
   const { searchParams } = parsedUrl;
+  const minParam = searchParams.get('min');
+  const maxParam = searchParams.get('max');
+  const limitParam = searchParams.get('limit');
+
+  // Validate that both min and max are provided
+  if (!minParam || !maxParam) {
+    return respondJSON(request, response, 400, {
+      error: 'Both min and max runtime are required',
+      id: 'missingRuntimeParams',
+    });
+  }
+
   // Parse min, max, and limit parameters
-  const min = parseInt(searchParams.get('min'), 10);
-  const max = parseInt(searchParams.get('max'), 10);
-  const limit = parseInt(searchParams.get('limit'), 10);
+  const min = parseInt(minParam, 10);
+  const max = parseInt(maxParam, 10);
+  const limit = limitParam && parseInt(limitParam, 10);
+
+  // Validate min and max are valid numbers
+  if (Number.isNaN(min) || Number.isNaN(max)) {
+    return respondJSON(request, response, 400, {
+      error: 'Min and max must be valid numbers',
+      id: 'invalidRuntimeParams',
+    });
+  }
+
+  // Validate min is less than max
+  if (min > max) {
+    return respondJSON(request, response, 400, {
+      error: 'Min runtime must be less than or equal to max runtime',
+      id: 'invalidRuntimeRange',
+    });
+  }
 
   // Filter movies based on runtime
   let responseData = disneyMoviesJSON.filter((movie) => {
@@ -167,22 +237,18 @@ const getByRuntime = (request, response, parsedUrl) => {
     // return false if runtime is not a number
     if (typeof runtime !== 'number') return false;
 
-    // Only check min and max if they are valid numbers
-    if (Number.isNaN(min) || (min !== undefined && runtime < min)) return false;
-    if (Number.isNaN(max) || (max !== undefined && runtime > max)) return false;
-
-    return true;
+    return runtime >= min && runtime <= max;
   });
 
   // Limit the number of results if limit is a valid number
-  if (limit && !Number.isNaN(limit)) {
+  if (limit && !Number.isNaN(limit) && limit > 0) {
     responseData = responseData.slice(0, limit);
   }
 
-  return respondJSON(request, response, 200, {
-    movies: responseData,
-    count: responseData.length,
-  });
+  // Filter to show only relevant information
+  const filteredMovies = responseData.map(getBasicMovieInfo);
+
+  return respondJSON(request, response, 200, filteredMovies);
 };
 
 // Adds a new movie to the dataset
@@ -197,6 +263,16 @@ const addMovie = (request, response) => {
     return respondJSON(request, response, 400, {
       error: 'Title, year, runtime, and rating are all required',
       id: 'addMovieMissingParams',
+    });
+  }
+
+  // Validate year is a 4-digit number
+  const yearNum = parseInt(year, 10);
+  const yearString = year.toString();
+  if (Number.isNaN(yearNum) || yearString.length !== 4) {
+    return respondJSON(request, response, 400, {
+      error: 'Year must be a 4-digit number',
+      id: 'invalidYear',
     });
   }
 
@@ -278,14 +354,17 @@ const rateMovie = (request, response) => {
     });
   }
 
+  // Check if the rating is already the same
+  if (disneyMoviesJSON[movieIndex].imdb_rating === rating.toString()) {
+    // Return 204 (No Content) - no change needed
+    return respondJSON(request, response, 204, {});
+  }
+
   // Update the movie rating
   disneyMoviesJSON[movieIndex].imdb_rating = rating.toString();
 
   // Return 200 with the updated movie
-  return respondJSON(request, response, 200, {
-    message: 'Movie rating updated successfully',
-    movie: disneyMoviesJSON[movieIndex],
-  });
+  return respondJSON(request, response, 200, disneyMoviesJSON[movieIndex]);
 };
 
 // Handle 404 not found

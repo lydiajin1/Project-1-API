@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation - Disney Movies API</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+
+<body>
+    <div class="section pb-3" style="background: linear-gradient(135deg, #9099e2 0%, #4b4bcf 100%);">
+        <h1 class="title is-2 has-text-white has-text-centered"> Disney Movies API Documentation </h1>
+    </div>
+
+    <div class="section has-background-light">
+        <div class="container" style="max-width: 1000px;">
+
+            <section class="endpoint-docs">
+                <h2 class="endpoint-title button column is-12 has-text-left is-link is-size-4">
+                    /getMovieTitles
+                    <span class="tag m-1 has-text-weight-bold"
+                        style="background-color: #A8E6CF; color: #2D5F4D;">GET</span>
+                    <span class="tag m-1 has-text-weight-bold"
+                        style="background-color: #FFD4A3; color: #8B5A00;">HEAD</span>
+                </h2>
+                <div class="endpoint-details has-background-white-ter px-4 py-4">
+                    <h3>Query Params</h3>
+                    <p><code>actor</code> - Filter by actor name (string, optional)</p>
+                    <p><code>year</code> - Filter by release year (4-digit number between 1937–2021, optional)</p>
+
+                    <h3>Returns</h3>
+                    <p>A JSON array of movie titles (strings).</p>
+                    <p>Format: <code>[ "title1", "title2", ... ]</code></p>
+
+                    <h3>Examples</h3>
+                    <p><strong>Request:</strong> <code>/getMovieTitles?actor=Tom+Hanks</code></p>
+                    <p><strong>Result:</strong> <code>["Toy Story", "Toy Story 2", "Toy Story 3"]</code></p>
+                    <br>
+                    <p><strong>Request:</strong> <code>/getMovieTitles?year=1995</code></p>
+                    <p><strong>Result:</strong> <code>["Toy Story", "Tall Tale", ...]</code></p>
+                </div>
+            </section>
+
+            <section class="endpoint-docs">
+                <h2 class="endpoint-title button column is-12 has-text-left is-link is-size-4">
+                    /getTopRated
+                    <span class="tag m-1 has-text-weight-bold"
+                        style="background-color: #A8E6CF; color: #2D5F4D;">GET</span>
+                    <span class="tag m-1 has-text-weight-bold"
+                        style="background-color: #FFD4A3; color: #8B5A00;">HEAD</span>
+                </h2>
+                <div class="endpoint-details has-background-white-ter px-4 py-4">
+                    <h3>Query Params</h3>
+                    <p><code>minRating</code> - Minimum IMDb rating (number, optional, default: 0)</p>
+                    <p><code>limit</code> - Maximum number of results (number, optional, default: 10)</p>
+
+                    <h3>Returns</h3>
+                    <p>A JSON array of movie objects sorted by IMDb rating (descending).</p>
+                    <p>Format:
+                        <code>[{ "title": string, "starring": [string], "directed by": string, "release date": string, "country": string, "language": string, "running time": number, "imdb rating": string, "rotten tomatoes": number|null }]</code>
+                    </p>
+
+                    <h3>Examples</h3>
+                    <p><strong>Request:</strong> <code>/getTopRated?minRating=8.5&limit=5</code></p>
+                    <p><strong>Result:</strong>
+                        <code>[{ title: "Hamilton", "starring": ["Daveed Diggs", ...], ... }, ...]</code>
+                    </p>
+                </div>
+            </section>
+
+
+            <section class="endpoint-docs">
+                <h2 class="endpoint-title button column is-12 has-text-left is-link is-size-4">
+                    /getByDecade
+                    <span class="tag m-1 has-text-weight-bold"
+                        style="background-color: #A8E6CF; color: #2D5F4D;">GET</span>
+                    <span class="tag m-1 has-text-weight-bold"
+                        style="background-color: #FFD4A3; color: #8B5A00;">HEAD</span>
+                </h2>
+                <div class="endpoint-details has-background-white-ter px-4 py-4">
+                    <h3>Query Params</h3>
+                    <p><code>decade</code> - 4-digit year ending in 0 (e.g. 1940, 1990, 2020) (required)</p>
+
+                    <h3>Returns</h3>
+                    <p>A JSON array of movie objects released in the given decade.</p>
+                    <p>Format:
+                        <code>[{ "title": string, "starring": [string], "directed by": string, "release date": string, "country": string, "language": string, "running time": number, "imdb rating": string, "rotten tomatoes": number|null }]</code>
+                    </p>
+
+                    <h3>Examples</h3>
+                    <p><strong>Request:</strong> <code>/getByDecade?decade=1980</code></p>
+                    <p><strong>Result:</strong>
+                        <code>[{ title: "Midnight Madness", "starring": ["David Naughton", ... ], ... }, ...]</code>
+                    </p>
+                    <br>
+                    <p><strong>Request:</strong> <code>/getByDecade?decade=2005</code></p>
+                    <p><strong>Result:</strong>
+                        <code>400 Error (Decade must be a 4-digit year ending in 0 (e.g., 1940, 1990, 2020))</code>
+                    </p>
+                </div>
+            </section>
+
+            <section class="endpoint-docs">
+                <h2 class="endpoint-title button column is-12 has-text-left is-link is-size-4">
+                    /getByRuntime
+                    <span class="tag m-1 has-text-weight-bold"
+                        style="background-color: #A8E6CF; color: #2D5F4D;">GET</span>
+                    <span class="tag m-1 has-text-weight-bold"
+                        style="background-color: #FFD4A3; color: #8B5A00;">HEAD</span>
+                </h2>
+                <div class="endpoint-details has-background-white-ter px-4 py-4">
+                    <h3>Query Params</h3>
+                    <p><code>min</code> - Minimum runtime (number, required)</p>
+                    <p><code>max</code> - Maximum runtime (number, required)</p>
+                    <p><code>limit</code> - Max results (number, optional)</p>
+
+                    <h3>Returns</h3>
+                    <p>A JSON array of movies with runtime between min and max.</p>
+                    <p>Format:
+                        <code>[{ "title": string, "starring": [string], "directed by": string, "release date": string, "country": string, "language": string, "running time": number, "imdb rating": string, "rotten tomatoes": number|null }]</code>
+                    </p>
+
+                    <h3>Examples</h3>
+                    <p><strong>Request:</strong> <code>/getByRuntime?min=60&max=120</code></p>
+                    <p><strong>Result:</strong>
+                        <code>[{ title: "Snow White and the Seven Dwarfs", "starring": ["Adriana Caselotti", ... ], ... }, ...]</code>
+                </div>
+            </section>
+
+            <section class="endpoint-docs">
+                <h2 class="endpoint-title button column is-12 has-text-left is-link is-size-4">
+                    /addMovie
+                    <span class="tag m-1 has-text-weight-bold"
+                        style="background-color: #FFB3BA; color: #8B0000;">POST</span>
+                </h2>
+                <div class="endpoint-details has-background-white-ter px-4 py-4">
+
+                    <h3>Supported Body Formats</h3>
+                    <p><code>application/json</code> <code>application/x-www-form-urlencoded</code></p>
+
+                    <h3>Body Params</h3>
+                    <p><code>title</code> Type: <code>string</code> - Movie title (required)</p>
+                    <p><code>year</code> Type: <code>string/number</code> - Release year (4-digit number, required)</p>
+                    <p><code>runtime</code> Type: <code>number</code> - Runtime in minutes (required)</p>
+                    <p><code>rating</code> Type: <code>number</code> - IMDB rating 0-10 (required)</p>
+
+                    <h3>Returns</h3>
+                    <p>A JSON movie object on success (201), or error (400) if invalid/duplicate.</p>
+                    <p>Format:
+                        <code>{ title: string, "Release date": string, "Running time (int)": number, imdb_rating: number }</code>
+                    </p>
+
+                    <h3>Examples</h3>
+                    <p><strong>Request:</strong> <code>/addMovie</code></p>
+                    <p><strong>Body:</strong> <code>{ title: 'Batman', year: '2013', runtime: 100, rating: 7.4 }</code>
+                    </p>
+                    <p><strong>Result:</strong> <code> 201 - { title: "Batman", "Release date": "2013", ... }</code></p>
+                    <br>
+                    <p><strong>Request:</strong> <code>/addMovie</code></p>
+                    <p><strong>Body:</strong> <code>{ title: 'New Movie', year: '99', runtime: 90, rating: 5 }</code>
+                    </p>
+                    <p><strong>Result:</strong> <code>400 Error (Year must be a 4-digit number)</code></p>
+                </div>
+            </section>
+
+            <section class="endpoint-docs">
+                <h2 class="endpoint-title button column is-12 has-text-left is-link is-size-4">
+                    /rateMovie
+                    <span class="tag m-1 has-text-weight-bold"
+                        style="background-color: #FFB3BA; color: #8B0000;">POST</span>
+                </h2>
+
+                <div class="endpoint-details has-background-white-ter px-4 py-4">
+                    <h3>Supported Body Formats</h3>
+                    <p><code>application/json</code> <code>application/x-www-form-urlencoded</code></p>
+
+                    <h3>Body Params</h3>
+                    <p><code>title</code> - Type: <code>string</code> - Movie title (required)</p>
+                    <p><code>rating</code> - Type: <code>number</code> - New IMDb rating (0–10, required)</p>
+
+                    <h3>Returns</h3>
+                    <p>Returns an updated movie object (200), no content if unchanged (204), or an error (400/404).</p>
+                    <p><strong>Format (success):</strong>
+                        <code>{ "title": string, "Directed by": [string], "Produced by": string, "Screenplay by": string, "Story by": [string], "Starring": [string], "Music by": [string], "Cinematography": [string], "Edited by": string, "Production company": [string], "Distributed by": [string], "Release date": [string], "Running time": string, "Country": string, "Language": string, "Budget": string, "Box office": string, "Running time (int)": number, "Budget (float)": number, "Box office (float)": number, "Release date (datetime)": string, "imdb_rating": string, "imdb_votes": string, "imdb_id": string, "metascore": string, "rotten_tomatoes": string }</code>
+                    </p>
+                    <p><strong>Format (no change):</strong> <code>204 No Content</code></p>
+                    <p><strong>Format (error):</strong> <code>{ error: string, id: string }</code></p>
+
+                    <h3>Examples</h3>
+                    <p><strong>Request:</strong> <code>/rateMovie</code></p>
+                    <p><strong>Body:</strong> <code>{ "title": "Frozen", "rating": 8.5 }</code></p>
+                    <p><strong>Result:</strong>
+                        <code>{ "title": "Frozen", "Directed by": ["Christ Buck", ...], ...}</code>
+                    </p>
+                    <br>
+                    <p><strong>Request:</strong> <code>/rateMovie</code></p>
+                    <p><strong>Body:</strong> <code>{ "title": "FakeMovie", "rating": 5 }</code></p>
+                    <p><strong>Result:</strong> <code>404 Error (Movie not found)</code></p>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // Code taken from W3 school to make collapsible sections for endpoints
+        // https://www.w3schools.com/howto/howto_js_collapsible.asp
+        var coll = document.getElementsByClassName("endpoint-title");
+        for (var i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                } else {
+                    content.style.display = "block";
+                }
+            });
+        }
+    </script>
+
+    <footer class="footer has-text-centered">
+        <p style="color: #6B4FBB;"> Lydia Jin - 2025 - IGME 430 Project 1 </p>
+        <p><a href="/" style="color: #FF69B4; text-decoration: underline;">Back to Application Page</a></p>
+    </footer>
+</body>
+
+</html>
